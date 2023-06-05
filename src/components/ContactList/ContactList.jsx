@@ -3,13 +3,17 @@ import {
   StyledBtnDel,
   StyledContactList,
 } from './ContactList.Styled';
-
+import { useEffect } from 'react';
 import { selectPhones, selectFilter } from '../../Redux/phoneSelectors';
 import { useSelector, useDispatch } from 'react-redux';
-import { delPhone } from 'Redux/phoneSlice';
+import { delContactThunk } from 'Redux/phoneOperations';
+import { fetchContactsThunk } from 'Redux/phoneOperations';
 
 export const ContactList = ({ fileList }) => {
   const dispatcher = useDispatch();
+  useEffect(() => {
+    dispatcher(fetchContactsThunk());
+  }, [dispatcher]);
   const contacts = useSelector(selectPhones);
   const currentFilter = useSelector(selectFilter);
   const filteredContacts = contacts.filter(el =>
@@ -24,7 +28,10 @@ export const ContactList = ({ fileList }) => {
           <span>
             {el.name}: {el.number}
           </span>
-          <StyledBtnDel id={el.id} onClick={() => dispatcher(delPhone(el.id))}>
+          <StyledBtnDel
+            id={el.id}
+            onClick={() => dispatcher(delContactThunk(el.id))}
+          >
             delete
           </StyledBtnDel>
         </StyledContact>
